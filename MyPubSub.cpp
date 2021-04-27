@@ -72,8 +72,8 @@ void MyPubSub::reconnect(){
         Serial.print(" failed, rc=");
         Serial.println(psclient->state());
       }
+      attempt++;
     }
-    attempt++;
   }
   psclient->loop();
 }

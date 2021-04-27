@@ -67,9 +67,11 @@ EfxAlarm efx_alarm(&strip);
 EfxAction efx_action(&strip);
 
 static void publish(pubeeStates status){
-  if(pubee.setStatus(status)){
-     myPubSub->reconnect();
-     myPubSub->publish(("{ \"state\":\""+pubee.getStatus()+"\" }").c_str()); 
+  if(myWifi.getCustomSettings().settings.MQTT){
+    if(pubee.setStatus(status)){
+       myPubSub->reconnect();
+       myPubSub->publish(("{ \"state\":\""+pubee.getStatus()+"\" }").c_str()); 
+    }
   }
 }
 
@@ -148,10 +150,12 @@ void setup() {
   myWifi.setActionHandler( stFncHandleAction );
   myWifi.getCustomSettings().print();
 
-  myPubSub = new MyPubSub(myWifi.getWifiClient(), myWifi.getCustomSettings().settings.MQTT_BROKER, myWifi.getCustomSettings().settings.MQTT_IN_TOPIC, myWifi.getCustomSettings().settings.MQTT_OUT_TOPIC );
-  myPubSub->setCredentials(myWifi.getCustomSettings().settings.MQTT_DEVICE_ID, myWifi.getCustomSettings().settings.MQTT_USER, myWifi.getCustomSettings().settings.MQTT_PASSWORD);
-  myPubSub->setHandleSubCallback( stHandleSubCallback );
-  myPubSub->setup();
+  if(myWifi.getCustomSettings().settings.MQTT){
+    myPubSub = new MyPubSub(myWifi.getWifiClient(), myWifi.getCustomSettings().settings.MQTT_BROKER, myWifi.getCustomSettings().settings.MQTT_IN_TOPIC, myWifi.getCustomSettings().settings.MQTT_OUT_TOPIC );
+    myPubSub->setCredentials(myWifi.getCustomSettings().settings.MQTT_DEVICE_ID, myWifi.getCustomSettings().settings.MQTT_USER, myWifi.getCustomSettings().settings.MQTT_PASSWORD);
+    myPubSub->setHandleSubCallback( stHandleSubCallback );
+    myPubSub->setup();
+  }
 
   updateData();
   Serial.println("time: " + clock.getFormattedTime());
@@ -170,7 +174,7 @@ void loop() {
   
   // Handle web server
   myWifi.handleClient();
-  myPubSub->handleClient();
+  if(myWifi.getCustomSettings().settings.MQTT) myPubSub->handleClient();
 
 
   clock.Clear(); 
