@@ -1,4 +1,4 @@
-# ESP8266-NeoPixel-NUdge
+# ESP8266-NeoPixel-Nudge
 
 Neopixel homemade clock (quater announcer) with nudge and alarm feature
 

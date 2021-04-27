@@ -1,5 +1,5 @@
 /**The MIT License (MIT)
-Copyright (c) 2021 by Radim Keseg
+Copyright (c) 2019 by Radim Keseg
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -22,7 +22,7 @@ const char PAGE_INDEX[] PROGMEM = R"=====(
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>NeoPixel Statue</title>
+	<title>NeoPixel Nudger</title>
 
 <script>
  var simplePicker = {
@@ -155,21 +155,30 @@ Neopixel Nodger with an ESP8266 IoT device
 <p/>
 
 <form method='post' action='settings'>
+<label class='title'>Time</label>
+<div class='btn-group'>
 <label>UTC TimeOffset<br><input id='_timeoffset' name='_timeoffset' length=5 pattern='^[0-9-\\.]{1,5}$' required value='{timeoffset}'></label><br>
 <label>DST<br><input id='_dst' name='_dst' type='checkbox' {dst}></label><br>
+</div>
 <br/>
+<label class='title'>Brightness</label>
+<div class='btn-group'>
 <label>Brightness by daylight<br><input id='_brightness' name='_brightness' length=3 pattern='^[0-9]{3,0}$' value='{brightness}'></label><br>
 <label>Brightness at night<br><input id='_brightness_night' name='_brightness_night' length=3 pattern='^[0-9]{3,0}$' value='{brightness_night}'>22:00-06:00</label><br>
+</div>
 <br/>
-<lable>Clock colors:</label><br/>
+<label class='title'>Clock colors</label>
+<div class='btn-group'>
 <label><input id="input-color-hours" type="text" pattern="#[0-9a-f]{3,6}" name="_input-color-hours" title="e.g. #f00 or #ff0000" value="{val-color-hours}" onkeyup="simplePicker.colorize(this.value,'box-color-hours')" ><div class="color-box" id="box-color-hours"></div> hours</label><br/>
 <label><input id="input-color-quarters" type="text" pattern="#[0-9a-f]{3,6}" name="_input-color-quarters" title="e.g. #0a0 or #00aa00" value="{val-color-quarters}" onkeyup="simplePicker.colorize(this.value,'box-color-quarters')"><div class="color-box" id="box-color-quarters"></div> quarters</label><br/>
 <label>Animate<br><input id='_animate' name='_animate' type='checkbox' {animate}></label><br>
+</div>
 <br/>
-<label>ALARM<br><input id='_alarm' name='_alarm' type='checkbox' {alarm}></label><br>
+<label class='title'><input id='_alarm' name='_alarm' type='checkbox' {alarm}>Alarm</label>
+<div class='btn-group'>
 <label><input id="_input-color-alarm" type="text" pattern="#[0-9a-f]{3,6}" name="_input-color-alarm" title="e.g. #f0f or #ff00ff" value="{val-color-alarm}" onkeyup="simplePicker.colorize(this.value,'box-color-alarm')" ><div class="color-box" id="box-color-alarm"></div> alarm</label><br/>
 <label>Time<br><input id='_alarmHour' name='_alarmHour' length=2 pattern='^[0-9]{2,0}$' value='{alarmHour}'>:<input id='_alarmMins' name='_alarmMins' length=2 pattern='^[0-9]{2,0}$' value='{alarmMins}'></label>
-<br/>
+</div>
 <br/>
 <label class='title'><input id='_mqtt' name='_mqtt' type='checkbox' {mqtt}>Send to Home Assisstant / MQTT broker</label>
 <div class='btn-group'>
@@ -182,8 +191,19 @@ Neopixel Nodger with an ESP8266 IoT device
 <tr><td><label>In Topic</label></td><td><input id='_mqtt_itopic' name='_mqtt_itopic' length=32 pattern='^[0-9a-z_/]{1,255}$' required value='{mqtt_itopic}'></td></tr>
 </table>
 </div>
-
+<br/>
 <input type='submit' value='Store'></form>
+
+<br/>
+<div class="actions">
+  <button id="_blinkAction" class="btn btn-icon">
+    <svg height="30" viewBox="0 0 24 24" width="30">
+        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+    </svg>
+  </button>
+</div>
+<br/>
 
 <script>
 function unmask(pass_id){
@@ -195,6 +215,19 @@ function unmask(pass_id){
   return false;
 }  
 
+function sendBlinkAction() {
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("GET", "action?color=330000&sec=5", true);
+  xmlHttp.send();
+}
+
+
+function alarm_checkbox(){
+  var checkBox = document.getElementById('_alarm');  
+  document.getElementById("_input-color-alarm").disabled  = !checkBox.checked;
+  document.getElementById("_alarmHour").disabled  = !checkBox.checked;
+  document.getElementById("_alarmMins").disabled  = !checkBox.checked;
+}
 
 function mqtt_checkbox(){
   var checkBox = document.getElementById('_mqtt');  
@@ -207,11 +240,14 @@ function mqtt_checkbox(){
 }
 
 function onLoad(){
+  alarm_checkbox();
   mqtt_checkbox();
   refresh();
 }
 
+document.getElementById('_alarm').addEventListener('click',alarm_checkbox);
 document.getElementById('_mqtt').addEventListener('click',mqtt_checkbox);
+document.getElementById('_blinkAction').addEventListener('click', sendBlinkAction);
 setTimeout(onLoad, 500);   
 
 </script>
