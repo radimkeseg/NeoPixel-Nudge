@@ -63,7 +63,12 @@ bool isInSetupMode = false;
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, /*NEOPIXEL_DATA_IN_PIN*/ 2, NEO_GRB + NEO_KHZ800);
 
+#ifdef SHOWCLOCK
+Clock clock(&strip, 30);
+#else
 Clock clock(&strip, 0);
+#endif
+
 EfxRainbow efx_rainbow(&strip);
 EfxHour efx_hour(&strip);
 EfxQuarter efx_quarter(&strip);

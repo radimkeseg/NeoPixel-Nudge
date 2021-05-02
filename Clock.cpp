@@ -61,9 +61,11 @@ void Clock::Show(boolean clear_background, boolean mix_colors){
     if(i%15 == 0){ // quarter dots
       setPixel( pos, color_dots_qrtr ,mix_colors);      
     }
+/*  too many poeple confused what the segment is - comenting out ;)  
     if(i > hour_pos && i < (hour_pos + 5)){ // hour segment
       setPixel( pos, color_segm_hour ,mix_colors);            
     }
+*/    
     if(i == secs_pos){ // second hand
       setPixel( pos, color_hand_secs ,mix_colors);            
     }
