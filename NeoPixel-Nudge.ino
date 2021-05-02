@@ -17,6 +17,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+//for now work well in case of 60 pixel strip only
+//in other cases comment the line below
+#define SHOWCLOCK
+
 #include "MyWifi.h"
 MyWifi myWifi; 
 
@@ -47,7 +51,7 @@ bool isInSetupMode = false;
 #define TX LED_BUILTIN
 #define RX D7
 */
-#define AP_NAME "NeoPixel-Nudge"
+#define AP_NAME "NeoPixel-Clock-Nudger"
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -57,7 +61,7 @@ bool isInSetupMode = false;
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, /*NEOPIXEL_DATA_IN_PIN*/ 2, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, /*NEOPIXEL_DATA_IN_PIN*/ 2, NEO_GRB + NEO_KHZ800);
 
 Clock clock(&strip, 0);
 EfxRainbow efx_rainbow(&strip);
@@ -176,7 +180,6 @@ void loop() {
   myWifi.handleClient();
   if(myWifi.getCustomSettings().settings.MQTT) myPubSub->handleClient();
 
-
   clock.Clear(); 
   
   if(clock.getHourInt()>=22 || clock.getHourInt()<6) strip.setBrightness(myWifi.getCustomSettings().settings.brightness_night);
@@ -190,17 +193,21 @@ void loop() {
     ps=ANIMATION;
   } 
   yield();
+
   
   // effect by the full hour
   if( clock.getMinsInt() == 0 && clock.getSecsInt()<20){
-    efx_hour.Show(); 
+    if(myWifi.getCustomSettings().settings.animate)
+      efx_hour.Show(); 
+    else
+      efx_rainbow.Show();    
     delay(10); 
     fast=true;
     ps = FULLHOUR;
   // effect by the guarters
   }else{
     efx_hour.Reset();
-    if( clock.getMinsInt() == 15 && clock.getSecsInt()<2 || clock.getMinsInt() == 30 && clock.getSecsInt()<4 || clock.getMinsInt() == 45 && clock.getSecsInt()<6){
+    if( clock.getMinsInt() == 15 && clock.getSecsInt()<3 || clock.getMinsInt() == 30 && clock.getSecsInt()<6 || clock.getMinsInt() == 45 && clock.getSecsInt()<9){
       efx_quarter.Show();
       delay(10); 
       fast=true;
@@ -237,19 +244,13 @@ void loop() {
     efx_action.Reset();
   }
   yield();
-    
-  strip.show();
 
-/*  
+#ifdef SHOWCLOCK
   // show clock
-  stamp = millis();
-  if (stamp - lastDrew > 500 || stamp < lastDrew ) {
-
-    //show clock hands
-    clock.Show(); delay(10);
-    lastDrew = stamp;
-  }
-*/
+  clock.Show(false, true); 
+#endif
+    
+  strip.show(); //render all
 
   if(stamp - lastUpdate > UPDATE_INTERVAL_SECS * 1000 || stamp < lastUpdate || forceUpdateData){
     updateData();

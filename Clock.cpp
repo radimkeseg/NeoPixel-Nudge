@@ -1,5 +1,5 @@
 /**The MIT License (MIT)
-Copyright (c) 2021 by Radim Keseg
+Copyright (c) 2017 by Radim Keseg
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -18,6 +18,8 @@ SOFTWARE.
 */
 
 #include "Clock.h"
+
+#define SHOWCLOCK
     
 //public:
 void Clock::SetUp(uint32_t color_hand_hour, uint32_t color_hand_mins, uint32_t color_hand_secs, uint32_t color_segm_hour, uint32_t color_dots_hour, uint32_t color_dots_qrtr){
@@ -52,7 +54,7 @@ void Clock::Show(boolean clear_background, boolean mix_colors){
 
   for(int i=0; i<count; i++){
     pos=(i + pixel_offset)%count;
-/*
+
     if(i%5 == 0){ //full hour dots
       setPixel( pos, color_dots_hour ,mix_colors);
     }
@@ -65,7 +67,7 @@ void Clock::Show(boolean clear_background, boolean mix_colors){
     if(i == secs_pos){ // second hand
       setPixel( pos, color_hand_secs ,mix_colors);            
     }
-*/
+
     if(i == mins_pos){ // minute hand
       setPixel( pos, color_hand_mins ,false);            
     }
@@ -74,7 +76,7 @@ void Clock::Show(boolean clear_background, boolean mix_colors){
     }
   }
    
-  strip->show();  
+//  strip->show();  
 }
 
 void Clock::Clear(){
@@ -101,4 +103,3 @@ void Clock::setPixel(int pos, uint32_t color, boolean mix_color){
 }
 
 void Clock::Reset(){}
-

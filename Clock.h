@@ -1,5 +1,5 @@
 /**The MIT License (MIT)
-Copyright (c) 2021 by Radim Keseg
+Copyright (c) 2017 by Radim Keseg
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -28,11 +28,11 @@ class Clock : virtual public ITimer
 {
     private:
       uint32_t color_hand_hour = 0xff0000;
-      uint32_t color_hand_mins = 0x00ff00; 
-      uint32_t color_hand_secs = 0x00ffff;
-      uint32_t color_segm_hour = 0; //hour segment
-      uint32_t color_dots_hour = 0; //full hour dots
-      uint32_t color_dots_qrtr = 0; //quarter dots
+      uint32_t color_hand_mins = 0x00aa00; 
+      uint32_t color_hand_secs = 0x110011;
+      uint32_t color_segm_hour = 0x111100; //hour segment
+      uint32_t color_dots_hour = 0x000011; //full hour dots
+      uint32_t color_dots_qrtr = 0x001133; //quarter dots
 
       TimeClient timeClient;
   

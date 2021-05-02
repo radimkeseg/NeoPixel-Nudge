@@ -26,9 +26,10 @@ void EfxQuarter::Show(boolean clear_background, boolean mix_colors){
   int index = 0;
 
   j+=incr; if(j>ln) j=0;
-  for(int x=0;x<ln;x++){
+  for(int x=0;x<ln/2;x++){
        index = int(x+j) % ln;
        strip->setPixelColor( index, (x<=ln/4) ? color: Adafruit_NeoPixel::Color(0, 0, 0) ); 
+       strip->setPixelColor( (ln-1)-index, (x<=ln/4) ? color: Adafruit_NeoPixel::Color(0, 0, 0) ); 
   }   
 }
 
