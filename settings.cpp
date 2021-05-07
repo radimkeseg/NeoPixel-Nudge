@@ -28,45 +28,33 @@ extern settings_t settins;
 
 void CustomSettings::init() {
   //http://esp8266.github.io/Arduino/versions/2.0.0/doc/filesystem.html
-  Serial.print("SPIFFS begin - ");
   if(SPIFFS.begin()){
-    Serial.println("OK");
     //SPIFFS.format(); //uncomment if formating needed
     delay(100);
-  }else{
-    Serial.println("FAILED");
   }
 }
 
 void CustomSettings::write(){
-    Serial.println("writing custom setting start");
-    Serial.println("file: " + CUSTOM_SETTINGS);
     //write location to SPIFF
     File f = SPIFFS.open(CUSTOM_SETTINGS, "w");
     if (f){
       f.write((uint8_t*) &settings, sizeof(settings_t));
-    }else{
-      Serial.println("open file for writing failed: " + CUSTOM_SETTINGS);
     }
     f.flush();
     f.close();
-    Serial.println("writing custom setting end");    
 }
 
 void CustomSettings::read(){
     //read setting from SPIFF
-    Serial.println("reading custom setting start");
     File f = SPIFFS.open(CUSTOM_SETTINGS, "r");
     if(f){
        f.read((uint8_t*) &settings, sizeof(settings_t));
-    }else{
-      Serial.println("open file for reading failed: " + CUSTOM_SETTINGS);
     }
     f.close();
-    Serial.println("reading custom setting end");
 }
 
 void CustomSettings::print(){    
+/*
     Serial.print("UTC TimeOffset: "); Serial.println(settings.UTC_OFFSET);
     Serial.print("DST: "); Serial.println(settings.DST);
     Serial.print("brightness: "); Serial.println(settings.brightness);
@@ -85,4 +73,5 @@ void CustomSettings::print(){
     Serial.print(" device ID: "); Serial.println(settings.MQTT_DEVICE_ID);
     Serial.print(" out topic: "); Serial.println(settings.MQTT_OUT_TOPIC);
     Serial.print(" in topic: "); Serial.println(settings.MQTT_IN_TOPIC);    
+*/	
 }

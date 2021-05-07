@@ -29,14 +29,6 @@ void MyPubSub::callback(char* topic, byte* payload, unsigned int length) {
   if(fHandleSubCallback!=NULL){
     fHandleSubCallback(topic, payload, length);
   }else{  
-    Serial.print("Message arrived [");
-    Serial.print(topic);
-    Serial.print("] ");
-    for (int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-    }
-    Serial.println();
-  
     //if message recieved just blink - hardcoded for ESP01
     bool blink = digitalRead(ESP01_BUILTINLED);
     for(int i=0; i<4; i++){
@@ -59,18 +51,11 @@ void MyPubSub::reconnect(){
   bool reconnected = false;
   
   if (!psclient->connected()) {
-    Serial.print("Attempting MQTT connection...");
     // Attempt to connect
     while(attempt<=3 && !reconnected){
       if (psclient->connect(clientID, user, password)) { //hardcoded needs to be fixed
-        Serial.println("connected");
         reconnected = true;
         subscribe();
-      } else {
-        Serial.print("attempt #");
-        Serial.print(attempt);
-        Serial.print(" failed, rc=");
-        Serial.println(psclient->state());
       }
       attempt++;
     }
@@ -82,15 +67,12 @@ bool MyPubSub::setup(){
   if(mqtt_server != NULL ){
     psclient->setServer(mqtt_server, 1883);
     psclient->setCallback( [this](char* topic, byte* payload, unsigned int length) { callback(topic, payload, length); } );
-    Serial.print("Setup MQTT server: ");
-    Serial.println(mqtt_server);
     
     //connect to server and subscribe
     reconnect();
     return true;
   }
    
-  Serial.println("Not Connected to MQTT server: <unspecified>");    
   return false;
 }
 
@@ -107,8 +89,6 @@ void MyPubSub::handleClient(){
 }
 
 bool MyPubSub::publish(const char* payload, boolean retained) {
-    Serial.print("OutTopic: "); Serial.println(outTopic);
-    Serial.print("Payload: "); Serial.println(payload);
     return psclient->publish(outTopic, (const uint8_t*) payload, strlen(payload), retained);
 }
 

@@ -17,9 +17,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-//for now work well in case of 60 pixel strip only
+//for now works well in case of 60 pixel strip only
 //in other cases comment the line below
-#define SHOWCLOCK
+//#define SHOWCLOCK
+#define PLAYSONG
 
 #include "MyWifi.h"
 MyWifi myWifi; 
@@ -37,6 +38,11 @@ MyPubSub *myPubSub;
 #include "EfXAlarm.h"
 #include "EfXAction.h"
 
+#ifdef PLAYSONG
+#include "miniMP3.h"
+miniMP3 mp3;
+#endif
+
 #include "Pubee.h"
 Pubee pubee;
 
@@ -51,7 +57,7 @@ bool isInSetupMode = false;
 #define TX LED_BUILTIN
 #define RX D7
 */
-#define AP_NAME "NeoPixel-Clock-Nudger"
+#define AP_NAME "NeoPixel-Bell-Nudger"
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -61,7 +67,7 @@ bool isInSetupMode = false;
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, /*NEOPIXEL_DATA_IN_PIN*/ 2, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, /*NEOPIXEL_DATA_IN_PIN*/ 2, NEO_GRB + NEO_KHZ800);
 
 #ifdef SHOWCLOCK
 Clock clock(&strip, 30);
@@ -94,11 +100,9 @@ static String stFncHandleAction(){
   char color[8];
   int sec = 0;
   
-  Serial.println("action"); 
   if(myWifi.getServer().arg("color")!=NULL){
     strncpy(color, myWifi.getServer().arg("color").c_str(), 8);
     efx_action.SetUp( ITimer::hex2rgb( color ) );
-    Serial.print("color: "); Serial.println(color);  
   }
   
   if(myWifi.getServer().arg("sec")==NULL ){
@@ -108,38 +112,36 @@ static String stFncHandleAction(){
     action = true;
     sec = atoi(myWifi.getServer().arg("sec").c_str());
     ActionInterval.set( sec * 1000 );
-    Serial.print("sec: "); Serial.println(sec);      
   }
   
   return "OK";
-  Serial.print("server response: OK ");  
 }
 
 #include <ArduinoJson.h>
 static String stHandleSubCallback(char* topic, byte* payload, unsigned int length){
-  Serial.println("MQTT message arrived:" );
-  Serial.print("topic: ");  Serial.println( topic );
-  Serial.println("payload: "); Serial.println( (char*)payload );
-  Serial.println("lenght: "); Serial.println( length );
-  Serial.println("");
-
   StaticJsonDocument<1024> doc;  //should be set dynamic, maybe later 255 should be enough
   DeserializationError error = deserializeJson(doc, (char*)payload);
 
   if (error) {
-    Serial.print("deserializeJson() failed: ");
-    Serial.println(error.f_str());
     return "JSON ERROR";
   }
 
   const char* color = doc["color"];
   efx_action.SetUp( ITimer::hex2rgb((char*)color) );
-  Serial.print("color: "); Serial.println(color);  
 
+
+#ifdef PLAYSONG
+  int song = doc["song"];
+  int volume = doc["volume"];
+  if(song>0){
+    mp3.play(volume, song);
+  }
+#endif
+
+  
   action = true;
   int sec = doc["sec"];
   ActionInterval.set( sec * 1000 );
-  Serial.print("sec: "); Serial.println(sec);
 
   return "OK";
 }
@@ -147,9 +149,7 @@ static String stHandleSubCallback(char* topic, byte* payload, unsigned int lengt
 /**/
 
 void setup() {
-  // Serial
-  Serial.begin(115200);
-  Serial.println("MAC: " + myWifi.getMAC());
+  //Serial.begin(115200);
 
   strip.begin();
   strip.clear();
@@ -167,7 +167,10 @@ void setup() {
   }
 
   updateData();
-  Serial.println("time: " + clock.getFormattedTime());
+
+#ifdef PLAYSONG
+  mp3.begin();
+#endif  
 
   delay(100);  
 }

@@ -1,0 +1,124 @@
+esphome:
+  name: esp32_cam_doorbell_01
+  platform: ESP32
+  board: esp32cam
+
+wifi:
+  ssid: "ssid"
+  password: "password"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp32 Cam Doorbell"
+    password: "AHSqLvJsPGu1"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: "api_password"
+
+ota:
+  password: "ota_password"
+
+esp32_camera:
+  external_clock:
+    pin: GPIO0
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO26
+    scl: GPIO27
+  data_pins: [GPIO5, GPIO18, GPIO19, GPIO21, GPIO36, GPIO39, GPIO34, GPIO35]
+  vsync_pin: GPIO25
+  href_pin: GPIO23
+  pixel_clock_pin: GPIO22
+  power_down_pin: GPIO32
+  # Image settings
+  name: esp32_cam_doorbell_01
+  resolution: 800x600
+  max_framerate: 15 fps
+  
+switch:
+  - platform: restart
+    name: esp32_cam_doorbell_01_restart
+
+# Flashlight
+output:
+  - platform: gpio
+    pin: GPIO4
+    id: gpio_4
+  - platform: gpio
+    pin: GPIO15
+    id: gpio_15
+    
+binary_sensor:
+  - platform: gpio
+    pin: GPIO2
+    name: esp32_cam_doorbell_01_pir
+    device_class: motion
+
+  - platform: gpio
+    pin:
+      number: GPIO14
+      mode: INPUT_PULLUP
+      inverted: True
+    name: esp32_cam_doorbell_01_button
+    
+light:
+  - platform: binary
+    output: gpio_4
+    name: esp32_cam_doorbell_01_light
+    
+  - platform: fastled_clockless
+    chipset: WS2812                   # zde je uveden chipset WS2812, protoze WS2815 je shodne co se tyce ovladani
+    outputgpio_15
+    num_leds: 12                 # zde je potreba uvest presny pocet LED diod na pásku pripojenem do svorkovnic oznacenych STRIP1
+    rgb_order: GRB
+    name: esp32_cam_doorbell_01_LED_ring              # tento nazev se pak sam zobrazi v Home Assistantovi. Samozrejme tam jde nasledne i prejmenovat, ale toto se zobrazi automaticky po pridani integrace
+    effects:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:    
+      - addressable_lambda:
+          name: "Smiley"
+          update_interval: 50ms
+          lambda: 
+          name: "Smiley"
+          update_interval: 100ms
+          lambda: 
+          name: "Smiley"
+          update_interval: 100ms
+          lambda: 
+          name: "Smiley"
+          update_interval: 100ms
+          lambda: 
+            static int j=0; 
+            int len = it.size();
+            int ind = 0;
+            
+            if(j>len || j<0){ 
+              j=0;
+            }
+            
+            for (int i = 0; i<len/2; i++) {
+              ind = int(i+j) % len;
+              if(i<1){ 
+                it[ind] = current_color;
+                it[len-ind] = current_color;
+              }else{
+                it[ind] = ESPColor::BLACK;
+                it[len-ind] = ESPColor::BLACK;
+              }              
+            }
+            
+            j++;

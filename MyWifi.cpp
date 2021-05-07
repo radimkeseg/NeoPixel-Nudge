@@ -26,12 +26,7 @@ SOFTWARE.
 #include "embHTML.h"
 
 boolean MyWifi::wifi_apply_hostname_(String hostname) {
-  Serial.print("Sett wifi station hostname: ");
-  Serial.println(hostname.c_str());  
   bool ret = wifi_station_set_hostname(const_cast<char *>(hostname.c_str()));
-  if (!ret) {
-    Serial.println("Setting WiFi Hostname failed!");
-  }
   return ret;
 }
 
@@ -75,9 +70,8 @@ void MyWifi::handle_root()
 
 void MyWifi::handle_store_settings(){
   if(server->arg("_dst")==NULL && server->arg("_timeoffset")==NULL ){
-    Serial.println("setting page refreshed only, no params");      
+    //;      
   }else{
-    Serial.println("settings changed");  
     cs.settings.UTC_OFFSET = atof(server->arg("_timeoffset").c_str());
     cs.settings.DST = server->arg("_dst").length()>0;
 
@@ -135,7 +129,6 @@ void MyWifi::setActionHandler(fncHandleAction fActionHandler){
 void MyWifi::restart(unsigned int inSec){
     delay(inSec*1000);
     //reset and try again, or maybe put it to deep sleep
-    Serial.print("restart in "); Serial.print(inSec); Serial.println(" sec"); 
     pinMode(0, OUTPUT);   
     digitalWrite(0,HIGH);  //from some reason this has to be set before reset|restart https://github.com/esp8266/Arduino/issues/1017
     ESP.reset();
@@ -144,7 +137,6 @@ void MyWifi::restart(unsigned int inSec){
 
 void MyWifi::forceManualConfig(const char* APname){
       if (!wifiManager->startConfigPortal(APname)) {
-        Serial.println("failed to connect and hit timeout");
         restart(3);
       }  
 }
@@ -192,22 +184,12 @@ void MyWifi::setup(const char* APname, int timeout_in_sec){
   //if it does not connect it starts an access point with the specified name
   //here  "AutoConnectAP"
   //and goes into a blocking loop awaiting configuration
-  Serial.println("AP: "+hostname);
   if(!wifiManager->autoConnect( hostname.c_str() ) ){
-    Serial.println("failed to connect and hit timeout");
-    
-    Serial.println("switching to no wifi mode");
     //restart(); //no wifi mode - uncomment the restart() if endess retry is needed
   }else{     
       // OTA Setup
       WiFi.hostname(hostname);
-      
-      if( mdns.begin( (hostname) .c_str(), WiFi.localIP() ) ){
-         Serial.print("mDNS: "); Serial.print(hostname); Serial.print(".local = "); Serial.println(WiFi.localIP());
-      }else{
-         Serial.print("mDNS failed");
-      }
-      
+
       httpUpdater->setup(server, "/firmware", update_username, update_password );
     
     
@@ -218,12 +200,10 @@ void MyWifi::setup(const char* APname, int timeout_in_sec){
       server->on("/action",std::bind(&MyWifi::handle_action,this)); 
     
       server->begin(); 
-      Serial.println("HTTP server started");
     
       mdns.addService("http", "tcp", 80); 
   }
   
-  Serial.println("reading settings ...");
   cs.init();
   cs.read();   
   cs.print();

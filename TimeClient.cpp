@@ -35,7 +35,6 @@ void TimeClient::updateTime() {
   WiFiClient client;
   const int httpPort = 80;
   if (!client.connect("www.google.com", httpPort)) {
-    Serial.println("connection failed");
     return;
   }
   
@@ -46,7 +45,6 @@ void TimeClient::updateTime() {
   int repeatCounter = 0;
   while(!client.available() && repeatCounter < 10) {
     delay(1000); 
-    Serial.println(".");
     repeatCounter++;
   }
 
@@ -56,21 +54,18 @@ void TimeClient::updateTime() {
   int size = 0;
   client.setNoDelay(false);
   while(client.connected()) {
-    if( ( millis() - theTime ) > 30*1000 || millis() < theTime ){Serial.print("INFINITE LOOP BREAK!"); break;}  //exit loop after one second.
+    if( ( millis() - theTime ) > 30*1000 || millis() < theTime ){break;}  //exit loop after one second.
     while((size = client.available()) > 0) {
       line = client.readStringUntil('\n');
       line.toUpperCase();
       // example: 
       // date: Thu, 19 Nov 2015 20:25:40 GMT
       if (line.startsWith("DATE: ")) {
-        Serial.println(line.substring(23, 25) + ":" + line.substring(26, 28) + ":" +line.substring(29, 31));
         int parsedHours = line.substring(23, 25).toInt();
         int parsedMinutes = line.substring(26, 28).toInt();
         int parsedSeconds = line.substring(29, 31).toInt();
-        Serial.println(String(parsedHours) + ":" + String(parsedMinutes) + ":" + String(parsedSeconds));
 
         localEpoc = (parsedHours * 60 * 60 + parsedMinutes * 60 + parsedSeconds);
-        Serial.println(localEpoc);
         localMillisAtUpdate = millis();
       }
     }
