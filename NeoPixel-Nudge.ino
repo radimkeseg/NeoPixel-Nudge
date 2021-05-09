@@ -52,6 +52,7 @@ bool isInSetupMode = false;
 #define SETUP_PIN 0      //GPIO0
 #define TX 1             //LED_BUILTIN
 #define RX 3
+#define LED_STRIP 2
 /*//node mcu test and debug
 #define SETUP_PIN D7      //GPIO0
 #define TX LED_BUILTIN
@@ -67,7 +68,7 @@ bool isInSetupMode = false;
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, /*NEOPIXEL_DATA_IN_PIN*/ 2, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, LED_STRIP, NEO_GRB + NEO_KHZ800);
 
 #ifdef SHOWCLOCK
 Clock clock(&strip, 30);
@@ -134,6 +135,8 @@ static String stHandleSubCallback(char* topic, byte* payload, unsigned int lengt
   int song = doc["song"];
   int volume = doc["volume"];
   if(song>0){
+    digitalWrite(SETUP_PIN, HIGH); 
+    delay(20);
     mp3.play(volume, song);
   }
 #endif
@@ -170,6 +173,8 @@ void setup() {
 
 #ifdef PLAYSONG
   mp3.begin();
+  pinMode(SETUP_PIN, OUTPUT);
+  digitalWrite(SETUP_PIN, LOW); 
 #endif  
 
   delay(100);  
@@ -241,6 +246,9 @@ void loop() {
 
   if(action){
     if(ActionInterval.expired()){
+#ifdef PLAYSONG    
+      digitalWrite(SETUP_PIN, LOW);         
+#endif
       action = false;
     }else{
       efx_action.Show(); 
