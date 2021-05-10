@@ -1,0 +1,90 @@
+- id: '1619975492514'
+  name: DoorBellRing_feedback_on
+  entities:
+    camera.esp32_cam_doorbell_01:
+      access_token: 213c65ee8cc78538fab2c1c63db3cb1873960b3d794b3dcd49e0fcda23f6365b
+      friendly_name: esp32_cam_doorbell_01
+      entity_picture: /api/camera_proxy/camera.esp32_cam_doorbell_01?token=213c65ee8cc78538fab2c1c63db3cb1873960b3d794b3dcd49e0fcda23f6365b
+      supported_features: 0
+      state: idle
+    switch.esp32_cam_doorbell_01_restart:
+      friendly_name: esp32_cam_doorbell_01_restart
+      icon: mdi:restart
+      state: 'off'
+    light.esp32_cam_doorbell_01_light:
+      supported_color_modes:
+      - onoff
+      friendly_name: esp32_cam_doorbell_01_light
+      supported_features: 8
+      state: 'off'
+    light.esp32_cam_doorbell_01_led_ring:
+      effect_list:
+      - None
+      - Random
+      - Strobe
+      - Flicker
+      - Rainbow
+      - Color Wipe
+      - Scan
+      - Twinkle
+      - Random Twinkle
+      - Fireworks
+      - Addressable Flicker
+      - Smiley
+      supported_color_modes:
+      - hs
+      color_mode: hs
+      brightness: 128
+      hs_color:
+      - 120
+      - 100
+      rgb_color:
+      - 0
+      - 255
+      - 0
+      xy_color:
+      - 0.172
+      - 0.747
+      effect: Smiley
+      friendly_name: esp32_cam_doorbell_01_LED_ring
+      supported_features: 61
+      state: 'on'
+  icon: mdi:bell
+- id: '1619975635069'
+  name: DoorBellRing_feedback_off
+  entities:
+    camera.esp32_cam_doorbell_01:
+      access_token: 681b46935ce795ad79b9e033d828897472490e5bae8cbd8cdc4310d2d3a87679
+      friendly_name: esp32_cam_doorbell_01
+      entity_picture: /api/camera_proxy/camera.esp32_cam_doorbell_01?token=681b46935ce795ad79b9e033d828897472490e5bae8cbd8cdc4310d2d3a87679
+      supported_features: 0
+      state: idle
+    switch.esp32_cam_doorbell_01_restart:
+      friendly_name: esp32_cam_doorbell_01_restart
+      icon: mdi:restart
+      state: 'off'
+    light.esp32_cam_doorbell_01_light:
+      supported_color_modes:
+      - onoff
+      friendly_name: esp32_cam_doorbell_01_light
+      supported_features: 8
+      state: 'off'
+    light.esp32_cam_doorbell_01_led_ring:
+      effect_list:
+      - None
+      - Random
+      - Strobe
+      - Flicker
+      - Rainbow
+      - Color Wipe
+      - Scan
+      - Twinkle
+      - Random Twinkle
+      - Fireworks
+      - Addressable Flicker
+      supported_color_modes:
+      - hs
+      friendly_name: esp32_cam_doorbell_01_LED_ring
+      supported_features: 61
+      state: 'off'
+  icon: mdi:bell-outline

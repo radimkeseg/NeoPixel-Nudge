@@ -1,0 +1,24 @@
+alias: doorbell_01_ring
+sequence:
+  - service: mqtt.publish
+    data:
+      topic: nudge/in_04
+      payload: '{ "color": "00ffff", sec : 5, song: 1, volume: 21 }'
+  - service: mqtt.publish
+    data:
+      topic: nudge/in_03
+      payload: '{ "color": "00ffff", sec : 5 }'
+  - service: mqtt.publish
+    data:
+      topic: nudge/in_02
+      payload: '{ "color": "00ffff", sec : 5 }'
+  - service: mqtt.publish
+    data:
+      topic: nudge/in_01
+      payload: '{ "color": "00ffff", sec : 5 }'
+  - service: mqtt.publish
+    data:
+      payload: '{ "color": "00ffff", sec : 5 }'
+      topic: clock/in_01
+mode: single
+icon: 'mdi:doorbell-video'

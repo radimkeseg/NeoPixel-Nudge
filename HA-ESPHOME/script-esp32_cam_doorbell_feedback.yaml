@@ -1,0 +1,9 @@
+alias: doorbell_01_feedback
+sequence:
+  - scene: scene.doorbellring_feedback
+  - wait_template: ''
+    timeout: '00:00:05'
+    continue_on_timeout: true
+  - scene: scene.doorbellring_feedback_off
+mode: single
+icon: 'mdi:hand'
