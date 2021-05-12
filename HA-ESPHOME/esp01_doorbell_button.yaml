@@ -1,0 +1,83 @@
+esphome:
+  name: esp01_doorbell_button
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: "VilaRuzi"
+  password: "wifi_password"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp01 Doorbell Button"
+    password: "ap_password"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: "api_password"
+
+ota:
+  password: "ota_password"
+
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO03        #PIR
+    name: esp01_doorbell_01_pir
+    device_class: motion
+
+  - platform: gpio
+    pin:
+      number: GPIO01   #BUTTON
+      mode: INPUT_PULLUP
+      inverted: True
+    name: esp01_doorbell_01_button
+    
+light:
+  - platform: fastled_clockless
+    chipset: WS2812                   
+    pin: GPIO02        #NEOPIXEL RING
+    num_leds: 12                 
+    rgb_order: GRB
+    name: esp01_doorbell_01_LED_ring
+    effects:
+      - random:
+      - strobe:
+      - flicker:
+      - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan:
+      - addressable_twinkle:
+      - addressable_random_twinkle:
+      - addressable_fireworks:
+      - addressable_flicker:    
+      - addressable_lambda:
+          name: "Smiley"
+          update_interval: 100ms
+          lambda: 
+            static int j=0; 
+            int len = it.size();
+            int ind = 0;
+            
+            if(j>len || j<0){ 
+              j=0;
+            }
+            
+            for (int i = 0; i<len/2; i++) {
+              ind = int(i+j) % len;
+              if(i<1){ 
+                it[ind] = current_color;
+                it[len-ind] = current_color;
+              }else{
+                it[ind] = ESPColor::BLACK;
+                it[len-ind] = ESPColor::BLACK;
+              }              
+            }
+            
+            j++;
+  
