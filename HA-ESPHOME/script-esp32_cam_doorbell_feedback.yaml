@@ -1,6 +1,6 @@
-alias: doorbell_01_feedback
+alias: doorbell_feedback
 sequence:
-  - scene: scene.doorbellring_feedback
+  - scene: scene.doorbellring_feedback_on
   - wait_template: ''
     timeout: '00:00:05'
     continue_on_timeout: true

@@ -1,4 +1,4 @@
-alias: doorbell_01_ring
+alias: doorbell_ring
 sequence:
   - service: mqtt.publish
     data:

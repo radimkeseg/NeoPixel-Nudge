@@ -1,5 +1,5 @@
 - id: '1619975492514'
-  name: DoorBellRing_feedback_on
+  name: doorbellring_feedback_on
   entities:
     camera.esp32_cam_doorbell_01:
       access_token: 213c65ee8cc78538fab2c1c63db3cb1873960b3d794b3dcd49e0fcda23f6365b
@@ -51,7 +51,7 @@
       state: 'on'
   icon: mdi:bell
 - id: '1619975635069'
-  name: DoorBellRing_feedback_off
+  name: doorbellring_feedback_off
   entities:
     camera.esp32_cam_doorbell_01:
       access_token: 681b46935ce795ad79b9e033d828897472490e5bae8cbd8cdc4310d2d3a87679

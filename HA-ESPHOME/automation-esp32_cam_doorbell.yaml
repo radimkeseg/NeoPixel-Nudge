@@ -1,0 +1,18 @@
+alias: DoorBell Rings
+description: ''
+trigger:
+  - type: turned_on
+    platform: device
+    device_id: 48d989710f20f37ee0e991a38035c122
+    entity_id: binary_sensor.esp32_cam_doorbell_01_button
+    domain: binary_sensor
+  - type: turned_on
+    platform: device
+    device_id: 7d6e04a2e790205969ca7da882465ffc
+    entity_id: binary_sensor.esp01_doorbell_01_button
+    domain: binary_sensor
+condition: []
+action:
+  - service: script.doorbell_ring
+  - service: script.doorbell_ring_feedback
+mode: single
