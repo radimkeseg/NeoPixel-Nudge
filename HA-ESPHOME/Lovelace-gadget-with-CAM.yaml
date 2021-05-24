@@ -1,0 +1,45 @@
+type: vertical-stack
+cards:
+  - type: vertical-stack
+    cards:
+      - type: grid
+        cards:
+          - type: button
+            entity: switch.esp32_cam_doorbell_01_restart
+            name: Restart
+            show_state: false
+            show_icon: true
+          - type: button
+            entity: script.doorbell_01_snapshot
+            show_state: true
+            tap_action:
+              action: call-service
+              service: script.doorbell_01_snapshot
+              service_data: {}
+              target: {}
+            name: Snapshot
+          - type: button
+            entity: light.esp32_cam_doorbell_01_light
+            name: Flash
+            show_state: true
+      - type: picture-entity
+        entity: camera.esp32_cam_doorbell_01
+        name: DoorBell Cam
+        camera_image: camera.esp32_cam_doorbell_01
+        show_state: false
+  - type: grid
+    cards:
+      - type: button
+        entity: binary_sensor.esp01_doorbell_01_button
+        name: Doorbell Button
+        show_state: true
+      - type: button
+        entity: weather.local_place
+        show_state: true
+      - type: button
+        entity: light.esp01_doorbell_01_led_ring
+        name: DoorBell NeoPixel
+        show_state: true
+        icon: 'mdi:ring'
+        tap_action:
+          action: none

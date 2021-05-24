@@ -1,0 +1,15 @@
+mqtt:
+  broker: 127.0.0.1
+  port: 1883
+
+sensor:
+  - platform: mqtt
+    state_topic: "nudge/ou_04"
+    name: "esp_nudge_04"
+    value_template: "{{ value_json.state }}"
+    
+homeassistant:  
+  customize:
+    sensor.esp_nudge_04:
+      friendly_name: "Door Bell 04"
+    
