@@ -2,10 +2,12 @@
 
 #include "IminiMP3.h"
 
+//https://www.theamplituhedron.com/articles/How-to-use-the-Serial-MP3-Player-UART-with-Speaker-by-OPEN-SMART-with-Arduino/
+
 // Select storage device to TF card
 static int8_t select_SD_card[] = {0x7e, 0x03, 0X35, 0x01, 0xef}; // 7E 03 35 01 EF
 // Play with index: /01/001xxx.mp3
-static int8_t play_song[] = {0x7e, 0x04, 0x41, 0x00, 0x01, 0xef}; // 7E 04 41 00 01 EF
+static int8_t play_song[] = {0x7e, 0x04, 0x31, 0x1E, 0x01, 0xef}; // 7E 04 31 1E 01 EF
 // Play the song.
 static int8_t play[] = {0x7e, 0x02, 0x01, 0xef}; // 7E 02 01 EF
 // Pause the song.

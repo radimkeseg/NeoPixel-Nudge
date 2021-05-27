@@ -8,13 +8,16 @@ void miniMP3a::begin(){
 
 
 void miniMP3a::play(int8_t volume, int8_t song){
-  play(song); //ignore volume
-}
-
-void miniMP3a::play(int8_t song){
+  if( volume>30 ) volume = 30;
+  play_song[3] = volume;
   if(song>255) song=255;   
   play_song[4] = song;
   sendCommand(play_song, 6);
+  
+}
+
+void miniMP3a::play(int8_t song){
+  play(30,song); 
 }
 
 
