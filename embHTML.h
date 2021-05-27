@@ -149,9 +149,9 @@ label.title{
  </head>
 
 <body>
-<h1>NeoPixel Nodger</h1>
+<h1>NeoPixel Nudger/Bell</h1>
 <p>
-Neopixel Nodger with an ESP8266 IoT device
+Neopixel Nudger/Bell with an ESP8266 IoT device
 <p/>
 
 <form method='post' action='settings'>

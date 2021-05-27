@@ -13,6 +13,10 @@ void miniMP3::play(int8_t volume, int8_t song){
     sendCommand(CMD_PLAY_WITHVOLUME, ((int16_t)volume)*256 + song);
 }
 
+void miniMP3::play(int8_t song){
+    play(30, song);
+}
+
 
 void miniMP3::sendCommand(int8_t command, int16_t dat){
    Send_buf[0] = 0x7e; //starting byte

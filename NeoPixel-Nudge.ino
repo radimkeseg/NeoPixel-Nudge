@@ -39,8 +39,10 @@ MyPubSub *myPubSub;
 #include "EfXAction.h"
 
 #ifdef PLAYSONG
-#include "miniMP3.h"
-miniMP3 mp3;
+//#include "miniMP3.h"
+#include "miniMP3a.h"
+//miniMP3 mp3; //blue miniMP3player1.0
+miniMP3a mp3; //red miniMP3playerA 
 #endif
 
 #include "Pubee.h"

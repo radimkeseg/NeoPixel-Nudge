@@ -1,9 +1,6 @@
 #pragma once
 
-#include <SoftwareSerial.h>
-
-#define ARDUINO_RX 3//should connect to TX of the Serial MP3 Player module
-#define ARDUINO_TX 1//connect to RX of the module
+#include "IminiMP3.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 //all the commands needed in the datasheet(http://geekmatic.in.ua/pdf/Catalex_MP3_board.pdf)
@@ -42,24 +39,18 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-class miniMP3
-{
+class miniMP3: public IminiMP3 {
   private:
     int8_t Send_buf[8];//The MP3 player undestands orders in a 8 int string
-    SoftwareSerial *mySerial; //mySerial(ARDUINO_RX, ARDUINO_TX);//init the serial protocol, tell to myserial wich pins are TX and RX
-    
+  
+  protected:  
     void sendCommand(int8_t command, int16_t dat);
 
-    public:
-      miniMP3(int RX, int TX){
-            mySerial = new SoftwareSerial(RX, TX);
-      }
-      miniMP3(): miniMP3(ARDUINO_RX, ARDUINO_TX){} 
+  public:
+    miniMP3(int RX, int TX): IminiMP3(RX, TX){}
+    miniMP3(): miniMP3(ARDUINO_RX, ARDUINO_TX){} 
 
-      ~miniMP3(){
-        delete mySerial;
-      }
-
-      void begin();
-      void play(int8_t volume, int8_t song);  
+    void begin();
+    void play(int8_t volume, int8_t song);  
+    void play(int8_t song);  
 };
