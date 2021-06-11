@@ -39,10 +39,10 @@ MyPubSub *myPubSub;
 #include "EfXAction.h"
 
 #ifdef PLAYSONG
-//#include "miniMP3.h"
-#include "miniMP3a.h"
-//miniMP3 mp3; //blue miniMP3player1.0
-miniMP3a mp3; //red miniMP3playerA 
+#include "miniMP3.h"
+//#include "miniMP3a.h"
+miniMP3 mp3; //blue miniMP3player1.0
+//miniMP3a mp3; //red miniMP3playerA 
 #endif
 
 #include "Pubee.h"
@@ -194,7 +194,6 @@ void loop() {
   // Handle web server
   myWifi.handleClient();
   if(myWifi.getCustomSettings().settings.MQTT) myPubSub->handleClient();
-
   clock.Clear(); 
   
   if(clock.getHourInt()>=22 || clock.getHourInt()<6) strip.setBrightness(myWifi.getCustomSettings().settings.brightness_night);
@@ -203,11 +202,9 @@ void loop() {
   //animate
   if( myWifi.getCustomSettings().settings.animate ) { 
     efx_rainbow.Show(); 
-    delay(10); 
     fast=true; 
     ps=ANIMATION;
   } 
-  yield();
 
   
   // effect by the full hour
@@ -216,7 +213,6 @@ void loop() {
       efx_hour.Show(); 
     else
       efx_rainbow.Show();    
-    delay(10); 
     fast=true;
     ps = FULLHOUR;
   // effect by the guarters
@@ -224,26 +220,22 @@ void loop() {
     efx_hour.Reset();
     if( clock.getMinsInt() == 15 && clock.getSecsInt()<3 || clock.getMinsInt() == 30 && clock.getSecsInt()<6 || clock.getMinsInt() == 45 && clock.getSecsInt()<9){
       efx_quarter.Show();
-      delay(10); 
       fast=true;
       ps = QUARTER;
     }else{
       efx_quarter.Reset();
     }
   }  
-  yield();
 
   //effect by alarm
   if(myWifi.getCustomSettings().settings.ALARM_SWITCH)
   if(clock.getHourInt() == myWifi.getCustomSettings().settings.alarmHour && clock.getMinsInt() == myWifi.getCustomSettings().settings.alarmMins){
     efx_alarm.Show(); 
-    delay(50); 
     fast=true;
     ps = ALARM;
   }else{
     efx_alarm.Reset();
   }
-  yield();
 
 
   if(action){
@@ -254,14 +246,12 @@ void loop() {
       action = false;
     }else{
       efx_action.Show(); 
-      delay(50); 
       fast=true;
       ps = ACTION;
     }
   }else{
     efx_action.Reset();
   }
-  yield();
 
 #ifdef SHOWCLOCK
   // show clock
@@ -279,7 +269,7 @@ void loop() {
     publish(ps);
   else
    publish(IDLE);
-  delay(fast?50:500);
+  delay(fast?100:200);
 }
 
 void updateData(){
