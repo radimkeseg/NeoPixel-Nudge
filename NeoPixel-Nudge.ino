@@ -73,9 +73,9 @@ bool isInSetupMode = false;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, LED_STRIP, NEO_GRB + NEO_KHZ800);
 
 #ifdef SHOWCLOCK
-Clock clock(&strip, 30);
+Clock myClock(&strip, 30);
 #else
-Clock clock(&strip, 0);
+Clock myClock(&strip, 0);
 #endif
 
 EfxRainbow efx_rainbow(&strip);
@@ -194,9 +194,9 @@ void loop() {
   // Handle web server
   myWifi.handleClient();
   if(myWifi.getCustomSettings().settings.MQTT) myPubSub->handleClient();
-  clock.Clear(); 
+  myClock.Clear(); 
   
-  if(clock.getHourInt()>=22 || clock.getHourInt()<6) strip.setBrightness(myWifi.getCustomSettings().settings.brightness_night);
+  if(myClock.getHourInt()>=22 || myClock.getHourInt()<6) strip.setBrightness(myWifi.getCustomSettings().settings.brightness_night);
   else strip.setBrightness(myWifi.getCustomSettings().settings.brightness);
 
   //animate
@@ -208,7 +208,7 @@ void loop() {
 
   
   // effect by the full hour
-  if( clock.getMinsInt() == 0 && clock.getSecsInt()<20){
+  if( myClock.getMinsInt() == 0 && myClock.getSecsInt()<20){
     if(myWifi.getCustomSettings().settings.animate)
       efx_hour.Show(); 
     else
@@ -218,7 +218,7 @@ void loop() {
   // effect by the guarters
   }else{
     efx_hour.Reset();
-    if( clock.getMinsInt() == 15 && clock.getSecsInt()<3 || clock.getMinsInt() == 30 && clock.getSecsInt()<6 || clock.getMinsInt() == 45 && clock.getSecsInt()<9){
+    if( myClock.getMinsInt() == 15 && myClock.getSecsInt()<3 || myClock.getMinsInt() == 30 && myClock.getSecsInt()<6 || myClock.getMinsInt() == 45 && myClock.getSecsInt()<9){
       efx_quarter.Show();
       fast=true;
       ps = QUARTER;
@@ -229,7 +229,7 @@ void loop() {
 
   //effect by alarm
   if(myWifi.getCustomSettings().settings.ALARM_SWITCH)
-  if(clock.getHourInt() == myWifi.getCustomSettings().settings.alarmHour && clock.getMinsInt() == myWifi.getCustomSettings().settings.alarmMins){
+  if(myClock.getHourInt() == myWifi.getCustomSettings().settings.alarmHour && myClock.getMinsInt() == myWifi.getCustomSettings().settings.alarmMins){
     efx_alarm.Show(); 
     fast=true;
     ps = ALARM;
@@ -255,7 +255,7 @@ void loop() {
 
 #ifdef SHOWCLOCK
   // show clock
-  clock.Show(false, true); 
+  myClock.Show(false, true); 
 #endif
     
   strip.show(); //render all
@@ -277,6 +277,6 @@ void updateData(){
   efx_quarter.SetUp(ITimer::hex2rgb( myWifi.getCustomSettings().settings.color_quarters) );
   efx_alarm.SetUp(ITimer::hex2rgb( myWifi.getCustomSettings().settings.color_alarm) );
   
-  clock.SetTimeOffset(myWifi.getCustomSettings().settings.UTC_OFFSET+myWifi.getCustomSettings().settings.DST);  
+  myClock.SetTimeOffset(myWifi.getCustomSettings().settings.UTC_OFFSET+myWifi.getCustomSettings().settings.DST);  
   if(forceUpdateData) forceUpdateData=false;
 }
