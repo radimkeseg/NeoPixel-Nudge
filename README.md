@@ -3,8 +3,8 @@
 Neopixel homemade clock (quater announcer) with nudge and alarm feature
 
 * also works as a wall clock see:
- * //#define SHOWCLOCK /*to show clock*/
- * //#define PLAYSONG  /*to play sound*/
+ * //#define SHOWCLOCK //to show clock
+ * //#define PLAYSONG  //to play sound
 
 
 ## Setup
