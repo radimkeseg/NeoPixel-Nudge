@@ -21,6 +21,7 @@ SOFTWARE.
 //in other cases comment the line below
 //#define SHOWCLOCK
 #define PLAYSONG
+#define CLICK
 
 #include "MyWifi.h"
 MyWifi myWifi; 
@@ -60,7 +61,7 @@ bool isInSetupMode = false;
 #define TX LED_BUILTIN
 #define RX D7
 */
-#define AP_NAME "NeoPixel-Bell-Nudger"
+#define AP_NAME "GateKeeper"
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -70,7 +71,7 @@ bool isInSetupMode = false;
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, LED_STRIP, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, LED_STRIP, NEO_GRB + NEO_KHZ800);
 
 #ifdef SHOWCLOCK
 Clock myClock(&strip, 30);
@@ -140,13 +141,24 @@ static String stHandleSubCallback(char* topic, byte* payload, unsigned int lengt
     digitalWrite(SETUP_PIN, HIGH); 
     delay(20);
     mp3.play(volume, song);
+    action = true;
+    int sec = doc["sec"];
+    ActionInterval.set( sec * 1000 );
   }
 #endif
 
-  
-  action = true;
-  int sec = doc["sec"];
-  ActionInterval.set( sec * 1000 );
+//pin click used to trigger automations e.g. relays
+#ifdef CLICK
+  int click = doc["click"];
+  int duration = doc["duration"]; //in ms
+  if(click>0){
+    digitalWrite(SETUP_PIN, HIGH); 
+    delay(duration>0?duration:20);
+    action = true;
+    int sec = doc["sec"];
+    ActionInterval.set( sec * 1000 );
+  }
+#endif
 
   return "OK";
 }
@@ -240,7 +252,7 @@ void loop() {
 
   if(action){
     if(ActionInterval.expired()){
-#ifdef PLAYSONG    
+#if defined PLAYSONG || defined CLICK   
       digitalWrite(SETUP_PIN, LOW);         
 #endif
       action = false;
