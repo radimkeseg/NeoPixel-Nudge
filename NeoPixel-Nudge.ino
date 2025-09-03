@@ -20,7 +20,7 @@ SOFTWARE.
 //for now works well in case of 60 pixel strip only
 //in other cases comment the line below
 //#define SHOWCLOCK
-#define PLAYSONG
+//#define PLAYSONG
 #define CLICK
 
 #include "MyWifi.h"
@@ -152,7 +152,7 @@ static String stHandleSubCallback(char* topic, byte* payload, unsigned int lengt
   int click = doc["click"];
   int duration = doc["duration"]; //in ms
   if(click>0){
-    digitalWrite(SETUP_PIN, HIGH); 
+    digitalWrite(SETUP_PIN, LOW); 
     delay(duration>0?duration:20);
     action = true;
     int sec = doc["sec"];
@@ -189,6 +189,11 @@ void setup() {
   mp3.begin();
   pinMode(SETUP_PIN, OUTPUT);
   digitalWrite(SETUP_PIN, LOW); 
+#endif  
+
+#ifdef CLICK
+  pinMode(SETUP_PIN, OUTPUT);
+  digitalWrite(SETUP_PIN, HIGH); 
 #endif  
 
   delay(100);  
@@ -252,8 +257,11 @@ void loop() {
 
   if(action){
     if(ActionInterval.expired()){
-#if defined PLAYSONG || defined CLICK   
+#ifdef PLAYSONG
       digitalWrite(SETUP_PIN, LOW);         
+#endif
+#ifdef CLICK
+      digitalWrite(SETUP_PIN, HIGH);         
 #endif
       action = false;
     }else{
