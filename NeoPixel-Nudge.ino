@@ -130,35 +130,39 @@ static String stHandleSubCallback(char* topic, byte* payload, unsigned int lengt
     return "JSON ERROR";
   }
 
+//execute color effect
+//{ "color": "00ffff", sec : 5}
   const char* color = doc["color"];
   efx_action.SetUp( ITimer::hex2rgb((char*)color) );
 
 
 #ifdef PLAYSONG
+//execute color effect and play song
+//{ "color": "00ffff", sec : 5, song: 1, volume: 30 }
   int song = doc["song"];
   int volume = doc["volume"];
   if(song>0){
     digitalWrite(SETUP_PIN, HIGH); 
     delay(20);
     mp3.play(volume, song);
-    action = true;
-    int sec = doc["sec"];
-    ActionInterval.set( sec * 1000 );
   }
 #endif
 
 //pin click used to trigger automations e.g. relays
 #ifdef CLICK
+//click the SETUP PIN -> ESP01 GPIO0
+//{ click:1, sec: 1 }
   int click = doc["click"];
   int duration = doc["duration"]; //in ms
   if(click>0){
     digitalWrite(SETUP_PIN, LOW); 
     delay(duration>0?duration:20);
+  }
+#endif
+
     action = true;
     int sec = doc["sec"];
     ActionInterval.set( sec * 1000 );
-  }
-#endif
 
   return "OK";
 }
