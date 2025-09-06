@@ -160,9 +160,11 @@ static String stHandleSubCallback(char* topic, byte* payload, unsigned int lengt
   }
 #endif
 
-    action = true;
     int sec = doc["sec"];
-    ActionInterval.set( sec * 1000 );
+    if(sec>0){
+      action = true;
+      ActionInterval.set( sec * 1000 );
+    }
 
   return "OK";
 }
