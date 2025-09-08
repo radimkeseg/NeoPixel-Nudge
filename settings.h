@@ -21,7 +21,7 @@ SOFTWARE.
 #include <FS.h> 
 
 // Setup
-const int UPDATE_INTERVAL_SECS = 24* 10 * 60;  // Update every 24 hrs
+const int UPDATE_INTERVAL_SECS = 24* 10 * 60;  // Update every 4 hrs
 
 #define update_username "admin"
 #define update_password "admin"
