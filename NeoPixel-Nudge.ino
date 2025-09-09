@@ -203,6 +203,7 @@ void setup() {
 #endif  
 
   delay(100);  
+  publish(RESTART);
 }
 
 long lastDrew = 0;

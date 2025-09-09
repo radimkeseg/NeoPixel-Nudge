@@ -26,8 +26,9 @@ SOFTWARE.
 #define ps_FULLHOUR "FULLHOUR"
 #define ps_QUARTER "QUARTER"
 #define ps_ANIMATION "ANIMATION"
+#define ps_RESTART "RESTART"
 
-typedef enum pubeeStates { NONE, IDLE, ACTION, ALARM, FULLHOUR, QUARTER, ANIMATION } pubeeStates;
+typedef enum pubeeStates { NONE, IDLE, ACTION, ALARM, FULLHOUR, QUARTER, ANIMATION, RESTART } pubeeStates;
 
 class Pubee
 {
@@ -53,6 +54,7 @@ class Pubee
           case FULLHOUR: return ps_FULLHOUR;
           case QUARTER: return ps_QUARTER;
           case ANIMATION: return ps_ANIMATION;
+          case RESTART: return ps_RESTART;
           default: return ps_NONE;
         }
       }
